@@ -7,7 +7,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
     // Basic CRUD Operations
     async create(order: Partial<Order>): Promise<Order> {
         const newOrder = await OrderModel.create(order);
-        return newOrder.toJSON();
+        return newOrder.toJSON() as unknown as Order;
     }
 
     async findById(id: string): Promise<Order | null> {
@@ -15,21 +15,21 @@ export class OrderRepositoryImpl implements IOrderRepository {
             .populate('customerId', 'name email phone')
             .populate('userId', 'name email')
             .populate('tenantId', 'name');
-        return order ? order.toJSON() : null;
+        return order ? (order.toJSON() as unknown as Order) : null;
     }
 
     async findByOrderNumber(orderNumber: string, tenantId: string): Promise<Order | null> {
         const order = await OrderModel.findOne({ orderNumber, tenantId })
             .populate('customerId', 'name email phone')
             .populate('userId', 'name email');
-        return order ? order.toJSON() : null;
+        return order ? (order.toJSON() as unknown as Order) : null;
     }
 
     async update(id: string, data: Partial<Order>): Promise<Order | null> {
         const order = await OrderModel.findByIdAndUpdate(id, data, { new: true })
             .populate('customerId', 'name email phone')
             .populate('userId', 'name email');
-        return order ? order.toJSON() : null;
+        return order ? (order.toJSON() as unknown as Order) : null;
     }
 
     async delete(id: string): Promise<boolean> {
@@ -61,7 +61,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         ]);
 
         return {
-            orders: orders.map(order => order.toJSON()),
+            orders: orders.map(order => order.toJSON() as unknown as Order),
             total
         };
     }
@@ -88,7 +88,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         ]);
 
         return {
-            orders: orders.map(order => order.toJSON()),
+            orders: orders.map(order => order.toJSON() as unknown as Order),
             total
         };
     }
@@ -116,7 +116,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         ]);
 
         return {
-            orders: orders.map(order => order.toJSON()),
+            orders: orders.map(order => order.toJSON() as unknown as Order),
             total
         };
     }
@@ -144,7 +144,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         ]);
 
         return {
-            orders: orders.map(order => order.toJSON()),
+            orders: orders.map(order => order.toJSON() as unknown as Order),
             total
         };
     }
@@ -162,7 +162,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         .populate('userId', 'name email')
         .sort({ dueDate: 1 });
 
-        return orders.map(order => order.toJSON());
+        return orders.map(order => order.toJSON() as unknown as Order);
     }
 
     async findOrdersDueToday(tenantId: string): Promise<Order[]> {
@@ -181,7 +181,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         .populate('userId', 'name email')
         .sort({ dueDate: 1 });
 
-        return orders.map(order => order.toJSON());
+        return orders.map(order => order.toJSON() as unknown as Order);
     }
 
     async findPendingApprovalOrders(tenantId: string): Promise<Order[]> {
@@ -194,7 +194,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         .populate('userId', 'name email')
         .sort({ createdAt: 1 });
 
-        return orders.map(order => order.toJSON());
+        return orders.map(order => order.toJSON() as unknown as Order);
     }
 
     async findRecurringOrdersDue(): Promise<Order[]> {
@@ -208,7 +208,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         .populate('userId', 'name email')
         .populate('tenantId', 'name');
 
-        return orders.map(order => order.toJSON());
+        return orders.map(order => order.toJSON() as unknown as Order);
     }
 
     // Search
@@ -239,7 +239,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         ]);
 
         return {
-            orders: orders.map(order => order.toJSON()),
+            orders: orders.map(order => order.toJSON() as unknown as Order),
             total
         };
     }
@@ -386,7 +386,9 @@ export class OrderRepositoryImpl implements IOrderRepository {
             ordersByStatus[status] = 0;
         });
         statusStats.forEach((stat: any) => {
-            ordersByStatus[stat._id] = stat.count;
+            if (stat._id && Object.values(OrderStatus).includes(stat._id)) {
+                ordersByStatus[stat._id as OrderStatus] = stat.count;
+            }
         });
 
         const paymentsByStatus: Record<PaymentStatus, number> = {} as any;
@@ -394,7 +396,9 @@ export class OrderRepositoryImpl implements IOrderRepository {
             paymentsByStatus[status] = 0;
         });
         paymentStats.forEach((stat: any) => {
-            paymentsByStatus[stat._id] = stat.count;
+            if (stat._id && Object.values(PaymentStatus).includes(stat._id)) {
+                paymentsByStatus[stat._id as PaymentStatus] = stat.count;
+            }
         });
 
         const deliveryData = deliveryStats[0] || { averageDeliveryTime: 0, onTimeDeliveries: 0, totalDeliveries: 0 };
@@ -447,7 +451,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
     // Order Templates
     async createTemplate(template: Partial<OrderTemplate>): Promise<OrderTemplate> {
         const newTemplate = await OrderTemplateModel.create(template);
-        return newTemplate.toJSON();
+        return newTemplate.toJSON() as unknown as OrderTemplate;
     }
 
     async findTemplatesByTenantId(tenantId: string): Promise<OrderTemplate[]> {
@@ -456,7 +460,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
             .populate('createdBy', 'name')
             .sort({ name: 1 });
         
-        return templates.map(template => template.toJSON());
+        return templates.map(template => template.toJSON() as unknown as OrderTemplate);
     }
 
     async updateTemplate(id: string, data: Partial<OrderTemplate>): Promise<OrderTemplate | null> {
@@ -464,7 +468,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
             .populate('customerId', 'name')
             .populate('createdBy', 'name');
         
-        return template ? template.toJSON() : null;
+        return template ? (template.toJSON() as unknown as OrderTemplate) : null;
     }
 
     async deleteTemplate(id: string): Promise<boolean> {
@@ -482,7 +486,17 @@ export class OrderRepositoryImpl implements IOrderRepository {
         }
         
         const newOperation = await BulkOrderOperationModel.create(dbOperation);
-        return newOperation.toJSON() as any;
+        const result = (newOperation as any).toObject();
+        
+        // Transform back to domain entity
+        return {
+            ...result,
+            id: result._id.toString(),
+            createdBy: result.createdBy.toString(),
+            errors: result.operationErrors || [],
+            createdAt: (result as any).createdAt,
+            updatedAt: (result as any).updatedAt
+        } as unknown as BulkOrderOperation;
     }
 
     async updateBulkOperation(id: string, data: Partial<BulkOrderOperation>): Promise<BulkOrderOperation | null> {
@@ -494,7 +508,19 @@ export class OrderRepositoryImpl implements IOrderRepository {
         }
         
         const operation = await BulkOrderOperationModel.findByIdAndUpdate(id, dbData, { new: true });
-        return operation ? (operation.toJSON() as any) : null;
+        if (!operation) return null;
+        
+        const result = (operation as any).toObject();
+        
+        // Transform back to domain entity
+        return {
+            ...result,
+            id: result._id.toString(),
+            createdBy: result.createdBy.toString(),
+            errors: result.operationErrors || [],
+            createdAt: (result as any).createdAt,
+            updatedAt: (result as any).updatedAt
+        } as unknown as BulkOrderOperation;
     }
 
     async findBulkOperationsByTenantId(tenantId: string): Promise<BulkOrderOperation[]> {
@@ -503,7 +529,17 @@ export class OrderRepositoryImpl implements IOrderRepository {
             .sort({ createdAt: -1 })
             .limit(50);
         
-        return operations.map(op => op.toJSON() as any);
+        return operations.map(op => {
+            const result = (op as any).toObject();
+            return {
+                ...result,
+                id: result._id.toString(),
+                createdBy: result.createdBy.toString(),
+                errors: result.operationErrors || [],
+                createdAt: (result as any).createdAt,
+                updatedAt: (result as any).updatedAt
+            } as unknown as BulkOrderOperation;
+        });
     }
 
     // Helper method to build filter query

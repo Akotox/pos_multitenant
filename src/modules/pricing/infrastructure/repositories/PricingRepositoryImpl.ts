@@ -1,118 +1,193 @@
 import { IPricingRepository } from '../../domain/repositories/IPricingRepository';
-import { PricingPlan, Subscription, PaymentRecord } from '../../domain/entities/PricingPlan';
+import { PricingPlan, Subscription, PaymentRecord, UsageMetrics } from '../../domain/entities/PricingPlan';
 import { 
     PricingPlanModel, 
     PricingSubscriptionModel, 
-    PaymentRecordModel 
+    PaymentRecordModel,
+    IPricingPlanDocument,
+    ISubscriptionDocument,
+    IPaymentRecordDocument
 } from '../models/pricing.models';
 
 export class PricingRepositoryImpl implements IPricingRepository {
-    // Pricing Plans
-    async createPlan(plan: Partial<PricingPlan>): Promise<PricingPlan> {
-        const newPlan = await PricingPlanModel.create(plan);
-        return newPlan.toJSON();
+    // Pricing Plan methods
+    async createPlan(planData: Partial<PricingPlan>): Promise<PricingPlan> {
+        const newPlan = new PricingPlanModel(planData);
+        await newPlan.save();
+        return newPlan.toJSON() as PricingPlan;
     }
 
     async findPlanById(id: string): Promise<PricingPlan | null> {
-        const plan = await PricingPlanModel.findById(id);
-        return plan ? plan.toJSON() : null;
+        const plan = await PricingPlanModel.findById(id).lean();
+        return plan ? ({
+            ...plan,
+            id: plan._id.toString()
+        } as PricingPlan) : null;
     }
 
     async findAllPlans(activeOnly: boolean = false): Promise<PricingPlan[]> {
         const query = activeOnly ? { isActive: true } : {};
-        const plans = await PricingPlanModel.find(query).sort({ price: 1 });
-        return plans.map(plan => plan.toJSON());
+        const plans = await PricingPlanModel.find(query).sort({ price: 1 }).lean();
+        return plans.map(plan => ({
+            ...plan,
+            id: plan._id.toString()
+        } as PricingPlan));
     }
 
-    async updatePlan(id: string, data: Partial<PricingPlan>): Promise<PricingPlan | null> {
-        const plan = await PricingPlanModel.findByIdAndUpdate(id, data, { new: true });
-        return plan ? plan.toJSON() : null;
+    async updatePlan(id: string, updateData: Partial<PricingPlan>): Promise<PricingPlan | null> {
+        const plan = await PricingPlanModel.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).lean();
+        
+        return plan ? ({
+            ...plan,
+            id: plan._id.toString()
+        } as PricingPlan) : null;
     }
 
     async deletePlan(id: string): Promise<boolean> {
-        const result = await PricingPlanModel.deleteOne({ _id: id });
-        return result.deletedCount > 0;
+        const result = await PricingPlanModel.findByIdAndDelete(id);
+        return !!result;
     }
 
-    // Subscriptions
-    async createSubscription(subscription: Partial<Subscription>): Promise<Subscription> {
-        const newSubscription = await PricingSubscriptionModel.create(subscription);
-        return newSubscription.toJSON();
+    // Subscription methods
+    async createSubscription(subscriptionData: Partial<Subscription>): Promise<Subscription> {
+        const newSubscription = new PricingSubscriptionModel(subscriptionData);
+        await newSubscription.save();
+        return newSubscription.toJSON() as unknown as Subscription;
     }
 
     async findSubscriptionById(id: string): Promise<Subscription | null> {
-        const subscription = await PricingSubscriptionModel.findById(id).populate('planId');
-        return subscription ? subscription.toJSON() : null;
+        const subscription = await PricingSubscriptionModel.findById(id).lean();
+        return subscription ? ({
+            ...subscription,
+            id: subscription._id.toString(),
+            tenantId: subscription.tenantId.toString(),
+            planId: subscription.planId.toString()
+        } as Subscription) : null;
     }
 
     async findSubscriptionByTenantId(tenantId: string): Promise<Subscription | null> {
-        const subscription = await PricingSubscriptionModel.findOne({ tenantId }).populate('planId');
-        return subscription ? subscription.toJSON() : null;
+        const subscription = await PricingSubscriptionModel.findOne({ tenantId }).lean();
+        return subscription ? ({
+            ...subscription,
+            id: subscription._id.toString(),
+            tenantId: subscription.tenantId.toString(),
+            planId: subscription.planId.toString()
+        } as Subscription) : null;
     }
 
     async findSubscriptionByStripeId(stripeSubscriptionId: string): Promise<Subscription | null> {
-        const subscription = await PricingSubscriptionModel.findOne({ stripeSubscriptionId }).populate('planId');
-        return subscription ? subscription.toJSON() : null;
+        const subscription = await PricingSubscriptionModel.findOne({ stripeSubscriptionId }).lean();
+        return subscription ? ({
+            ...subscription,
+            id: subscription._id.toString(),
+            tenantId: subscription.tenantId.toString(),
+            planId: subscription.planId.toString()
+        } as Subscription) : null;
     }
 
-    async updateSubscription(id: string, data: Partial<Subscription>): Promise<Subscription | null> {
-        const subscription = await PricingSubscriptionModel.findByIdAndUpdate(id, data, { new: true }).populate('planId');
-        return subscription ? subscription.toJSON() : null;
+    async updateSubscription(id: string, updateData: Partial<Subscription>): Promise<Subscription | null> {
+        const subscription = await PricingSubscriptionModel.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).lean();
+        
+        return subscription ? ({
+            ...subscription,
+            id: subscription._id.toString(),
+            tenantId: subscription.tenantId.toString(),
+            planId: subscription.planId.toString()
+        } as Subscription) : null;
     }
 
     async findExpiredSubscriptions(): Promise<Subscription[]> {
-        const now = new Date();
-        const subscriptions = await PricingSubscriptionModel.find({
-            currentPeriodEnd: { $lt: now },
-            status: { $in: ['ACTIVE', 'PAST_DUE'] }
-        }).populate('planId');
+        const subscriptions = await PricingSubscriptionModel.find({ 
+            status: { $in: ['PAST_DUE', 'UNPAID', 'CANCELLED'] } 
+        }).lean();
         
-        return subscriptions.map(sub => sub.toJSON());
+        return subscriptions.map(sub => ({
+            ...sub,
+            id: sub._id.toString(),
+            tenantId: sub.tenantId.toString(),
+            planId: sub.planId.toString()
+        } as Subscription));
     }
 
     async findSubscriptionsEndingSoon(days: number): Promise<Subscription[]> {
-        const futureDate = new Date();
-        futureDate.setDate(futureDate.getDate() + days);
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + days);
         
         const subscriptions = await PricingSubscriptionModel.find({
-            currentPeriodEnd: { $lte: futureDate },
             status: 'ACTIVE',
-            cancelAtPeriodEnd: false
-        }).populate('planId');
+            currentPeriodEnd: { $lte: targetDate }
+        }).lean();
         
-        return subscriptions.map(sub => sub.toJSON());
+        return subscriptions.map(sub => ({
+            ...sub,
+            id: sub._id.toString(),
+            tenantId: sub.tenantId.toString(),
+            planId: sub.planId.toString()
+        } as Subscription));
     }
 
-    // Payment Records
-    async createPaymentRecord(payment: Partial<PaymentRecord>): Promise<PaymentRecord> {
-        const newPayment = await PaymentRecordModel.create(payment);
-        return newPayment.toJSON();
+    // Payment Record methods
+    async createPaymentRecord(paymentData: Partial<PaymentRecord>): Promise<PaymentRecord> {
+        const newPayment = new PaymentRecordModel(paymentData);
+        await newPayment.save();
+        return newPayment.toJSON() as unknown as PaymentRecord;
     }
 
     async findPaymentsByTenantId(tenantId: string, page: number = 1, limit: number = 10): Promise<{ payments: PaymentRecord[]; total: number }> {
         const skip = (page - 1) * limit;
+        
         const [payments, total] = await Promise.all([
             PaymentRecordModel.find({ tenantId })
-                .populate('subscriptionId')
+                .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
-                .sort({ createdAt: -1 }),
+                .lean(),
             PaymentRecordModel.countDocuments({ tenantId })
         ]);
 
         return {
-            payments: payments.map(payment => payment.toJSON()),
+            payments: payments.map(payment => ({
+                ...payment,
+                id: payment._id.toString(),
+                tenantId: payment.tenantId.toString(),
+                subscriptionId: payment.subscriptionId.toString()
+            } as PaymentRecord)),
             total
         };
     }
 
     async findPaymentByStripeId(stripePaymentIntentId: string): Promise<PaymentRecord | null> {
-        const payment = await PaymentRecordModel.findOne({ stripePaymentIntentId });
-        return payment ? payment.toJSON() : null;
+        const payment = await PaymentRecordModel.findOne({ stripePaymentIntentId }).lean();
+        return payment ? ({
+            ...payment,
+            id: payment._id.toString(),
+            tenantId: payment.tenantId.toString(),
+            subscriptionId: payment.subscriptionId.toString()
+        } as PaymentRecord) : null;
     }
 
-    async updatePaymentRecord(id: string, data: Partial<PaymentRecord>): Promise<PaymentRecord | null> {
-        const payment = await PaymentRecordModel.findByIdAndUpdate(id, data, { new: true });
-        return payment ? payment.toJSON() : null;
+    async updatePaymentRecord(id: string, updateData: Partial<PaymentRecord>): Promise<PaymentRecord | null> {
+        const payment = await PaymentRecordModel.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).lean();
+        
+        return payment ? ({
+            ...payment,
+            id: payment._id.toString(),
+            tenantId: payment.tenantId.toString(),
+            subscriptionId: payment.subscriptionId.toString()
+        } as PaymentRecord) : null;
     }
+
+    // Usage tracking methods - removed since not in interface
 }

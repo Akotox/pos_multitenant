@@ -1,3 +1,112 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     CreateOrderRequest:
+ *       type: object
+ *       required:
+ *         - customerId
+ *         - items
+ *         - billingAddress
+ *       properties:
+ *         customerId:
+ *           type: string
+ *           description: Customer ID
+ *           example: "507f1f77bcf86cd799439011"
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/OrderItem'
+ *           minItems: 1
+ *         billingAddress:
+ *           $ref: '#/components/schemas/Address'
+ *         shippingAddress:
+ *           $ref: '#/components/schemas/Address'
+ *         paymentTerms:
+ *           $ref: '#/components/schemas/PaymentTerms'
+ *         priority:
+ *           type: string
+ *           enum: [LOW, NORMAL, HIGH, URGENT, CRITICAL]
+ *           default: NORMAL
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *         expectedDeliveryDate:
+ *           type: string
+ *           format: date-time
+ *         notes:
+ *           type: string
+ *     
+ *     UpdateOrderStatusRequest:
+ *       type: object
+ *       required:
+ *         - status
+ *       properties:
+ *         status:
+ *           type: string
+ *           enum: [DRAFT, PENDING_APPROVAL, APPROVED, CONFIRMED, IN_PRODUCTION, READY_TO_SHIP, SHIPPED, DELIVERED, COMPLETED, CANCELLED, ON_HOLD, RETURNED]
+ *         reason:
+ *           type: string
+ *         notes:
+ *           type: string
+ *     
+ *     RecordPaymentRequest:
+ *       type: object
+ *       required:
+ *         - amount
+ *         - paymentMethod
+ *       properties:
+ *         amount:
+ *           type: number
+ *           minimum: 0.01
+ *         paymentMethod:
+ *           type: string
+ *           enum: [CASH, CARD, BANK_TRANSFER, CHECK, CREDIT_ACCOUNT, FINANCING]
+ *         notes:
+ *           type: string
+ *     
+ *     OrderTemplate:
+ *       type: object
+ *       required:
+ *         - name
+ *         - items
+ *         - paymentTerms
+ *       properties:
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/OrderItem'
+ *         paymentTerms:
+ *           $ref: '#/components/schemas/PaymentTerms'
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *     
+ *     BulkOperationRequest:
+ *       type: object
+ *       required:
+ *         - type
+ *         - orderIds
+ *         - parameters
+ *       properties:
+ *         type:
+ *           type: string
+ *           enum: [UPDATE_STATUS, UPDATE_PRIORITY, SEND_NOTIFICATIONS, EXPORT_ORDERS, APPLY_DISCOUNT, UPDATE_PAYMENT_TERMS]
+ *         orderIds:
+ *           type: array
+ *           items:
+ *             type: string
+ *           minItems: 1
+ *         parameters:
+ *           type: object
+ */
+
 import { Router } from 'express';
 import { OrderController } from '../controllers/OrderController';
 import { OrderUseCases } from '../../application/usecases/OrderUseCases';
@@ -96,6 +205,44 @@ const paginationValidation = [
 // All routes require authentication
 router.use(auth());
 
+/**
+ * @swagger
+ * /api/v1/orders:
+ *   post:
+ *     summary: Create a new order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateOrderRequest'
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Subscription limit exceeded
+ */
 // Basic CRUD Operations
 router.post('/', 
     auth([UserRole.OWNER, UserRole.MANAGER, UserRole.CASHIER]),
@@ -105,6 +252,60 @@ router.post('/',
     orderController.createOrder
 );
 
+/**
+ * @swagger
+ * /api/v1/orders:
+ *   get:
+ *     summary: Get all orders with pagination
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *         description: Sort order
+ *     responses:
+ *       200:
+ *         description: Orders retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Order'
+ *                 meta:
+ *                   $ref: '#/components/schemas/PaginationMeta'
+ */
 router.get('/',
     auth([UserRole.OWNER, UserRole.MANAGER, UserRole.CASHIER]),
     paginationValidation,
@@ -112,6 +313,52 @@ router.get('/',
     orderController.getOrders
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/search:
+ *   get:
+ *     summary: Search orders
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Search term
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *     responses:
+ *       200:
+ *         description: Search results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Order'
+ *                 meta:
+ *                   $ref: '#/components/schemas/PaginationMeta'
+ */
 router.get('/search',
     auth([UserRole.OWNER, UserRole.MANAGER, UserRole.CASHIER]),
     query('q').notEmpty().withMessage('Search term is required'),
@@ -120,6 +367,52 @@ router.get('/search',
     orderController.searchOrders
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/metrics:
+ *   get:
+ *     summary: Get order metrics and analytics
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Start date for metrics
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: End date for metrics
+ *     responses:
+ *       200:
+ *         description: Order metrics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     totalOrders:
+ *                       type: integer
+ *                     totalRevenue:
+ *                       type: number
+ *                     averageOrderValue:
+ *                       type: number
+ *                     statusBreakdown:
+ *                       type: object
+ *       403:
+ *         description: Feature not available in current plan
+ */
 router.get('/metrics',
     auth([UserRole.OWNER, UserRole.MANAGER]),
     checkFeatureAccess('advancedAnalytics'),
@@ -129,21 +422,124 @@ router.get('/metrics',
     orderController.getOrderMetrics
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/overdue:
+ *   get:
+ *     summary: Get overdue orders
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Overdue orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Order'
+ */
 router.get('/overdue',
     auth([UserRole.OWNER, UserRole.MANAGER]),
     orderController.getOverdueOrders
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/due-today:
+ *   get:
+ *     summary: Get orders due today
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Orders due today
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Order'
+ */
 router.get('/due-today',
     auth([UserRole.OWNER, UserRole.MANAGER]),
     orderController.getOrdersDueToday
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/pending-approval:
+ *   get:
+ *     summary: Get orders pending approval
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Orders pending approval
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Order'
+ */
 router.get('/pending-approval',
     auth([UserRole.OWNER, UserRole.MANAGER]),
     orderController.getPendingApprovalOrders
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/number/{orderNumber}:
+ *   get:
+ *     summary: Get order by order number
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: orderNumber
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order number
+ *     responses:
+ *       200:
+ *         description: Order found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       404:
+ *         description: Order not found
+ */
 router.get('/number/:orderNumber',
     auth([UserRole.OWNER, UserRole.MANAGER, UserRole.CASHIER]),
     param('orderNumber').notEmpty().withMessage('Order number is required'),
@@ -151,6 +547,52 @@ router.get('/number/:orderNumber',
     orderController.getOrderByNumber
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/customer/{customerId}:
+ *   get:
+ *     summary: Get orders by customer
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: customerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Customer ID
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *     responses:
+ *       200:
+ *         description: Customer orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Order'
+ *                 meta:
+ *                   $ref: '#/components/schemas/PaginationMeta'
+ */
 router.get('/customer/:customerId',
     auth([UserRole.OWNER, UserRole.MANAGER, UserRole.CASHIER]),
     param('customerId').isMongoId().withMessage('Valid customer ID is required'),
@@ -159,6 +601,37 @@ router.get('/customer/:customerId',
     orderController.getOrdersByCustomer
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/{id}:
+ *   get:
+ *     summary: Get order by ID
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       404:
+ *         description: Order not found
+ */
 router.get('/:id',
     auth([UserRole.OWNER, UserRole.MANAGER, UserRole.CASHIER]),
     param('id').isMongoId().withMessage('Valid order ID is required'),
@@ -166,6 +639,60 @@ router.get('/:id',
     orderController.getOrderById
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/{id}:
+ *   put:
+ *     summary: Update order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/OrderItem'
+ *               priority:
+ *                 type: string
+ *                 enum: [LOW, NORMAL, HIGH, URGENT, CRITICAL]
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               expectedDeliveryDate:
+ *                 type: string
+ *                 format: date-time
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Order updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       404:
+ *         description: Order not found
+ */
 router.put('/:id',
     auth([UserRole.OWNER, UserRole.MANAGER]),
     param('id').isMongoId().withMessage('Valid order ID is required'),
@@ -174,6 +701,41 @@ router.put('/:id',
     orderController.updateOrder
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/{id}/status:
+ *   put:
+ *     summary: Update order status
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateOrderStatusRequest'
+ *     responses:
+ *       200:
+ *         description: Order status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ */
 router.put('/:id/status',
     auth([UserRole.OWNER, UserRole.MANAGER]),
     param('id').isMongoId().withMessage('Valid order ID is required'),
@@ -182,6 +744,38 @@ router.put('/:id/status',
     orderController.updateOrderStatus
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/{id}:
+ *   delete:
+ *     summary: Delete order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Order deleted successfully
+ *       404:
+ *         description: Order not found
+ */
 router.delete('/:id',
     auth([UserRole.OWNER, UserRole.MANAGER]),
     param('id').isMongoId().withMessage('Valid order ID is required'),
@@ -189,6 +783,41 @@ router.delete('/:id',
     orderController.deleteOrder
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/{id}/payments:
+ *   post:
+ *     summary: Record a payment for an order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RecordPaymentRequest'
+ *     responses:
+ *       200:
+ *         description: Payment recorded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ */
 // Payment Management
 router.post('/:id/payments',
     auth([UserRole.OWNER, UserRole.MANAGER, UserRole.CASHIER]),
@@ -198,6 +827,44 @@ router.post('/:id/payments',
     orderController.recordPayment
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/{id}/approve:
+ *   post:
+ *     summary: Approve an order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               comments:
+ *                 type: string
+ *                 description: Approval comments
+ *     responses:
+ *       200:
+ *         description: Order approved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ */
 // Approval Workflow
 router.post('/:id/approve',
     auth([UserRole.OWNER, UserRole.MANAGER]),
@@ -207,6 +874,47 @@ router.post('/:id/approve',
     orderController.approveOrder
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/{id}/reject:
+ *   post:
+ *     summary: Reject an order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - reason
+ *             properties:
+ *               reason:
+ *                 type: string
+ *                 description: Rejection reason
+ *     responses:
+ *       200:
+ *         description: Order rejected successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ */
 router.post('/:id/reject',
     auth([UserRole.OWNER, UserRole.MANAGER]),
     param('id').isMongoId().withMessage('Valid order ID is required'),
@@ -215,6 +923,39 @@ router.post('/:id/reject',
     orderController.rejectOrder
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/templates:
+ *   post:
+ *     summary: Create an order template
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/OrderTemplate'
+ *     responses:
+ *       201:
+ *         description: Template created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ */
 // Templates
 router.post('/templates',
     auth([UserRole.OWNER, UserRole.MANAGER]),
@@ -223,11 +964,76 @@ router.post('/templates',
     orderController.createTemplate
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/templates/list:
+ *   get:
+ *     summary: Get all order templates
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Templates retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/OrderTemplate'
+ */
 router.get('/templates/list',
     auth([UserRole.OWNER, UserRole.MANAGER, UserRole.CASHIER]),
     orderController.getTemplates
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/templates/{templateId}/create-order:
+ *   post:
+ *     summary: Create order from template
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: templateId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Template ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - customerId
+ *             properties:
+ *               customerId:
+ *                 type: string
+ *                 description: Customer ID
+ *     responses:
+ *       201:
+ *         description: Order created from template successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ */
 router.post('/templates/:templateId/create-order',
     auth([UserRole.OWNER, UserRole.MANAGER, UserRole.CASHIER]),
     param('templateId').isMongoId().withMessage('Valid template ID is required'),
@@ -236,6 +1042,42 @@ router.post('/templates/:templateId/create-order',
     orderController.createOrderFromTemplate
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/bulk-operations:
+ *   post:
+ *     summary: Perform bulk operations on orders (Enterprise Feature)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/BulkOperationRequest'
+ *     responses:
+ *       200:
+ *         description: Bulk operation initiated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     operationId:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                       example: "PROCESSING"
+ *       403:
+ *         description: Feature not available in current plan
+ */
 // Bulk Operations (Enterprise Feature)
 router.post('/bulk-operations',
     auth([UserRole.OWNER, UserRole.MANAGER]),
@@ -245,6 +1087,37 @@ router.post('/bulk-operations',
     orderController.createBulkOperation
 );
 
+/**
+ * @swagger
+ * /api/v1/orders/recurring/process:
+ *   post:
+ *     summary: Process recurring orders (Enterprise Feature)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Recurring orders processed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     processedCount:
+ *                       type: integer
+ *                     createdOrders:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *       403:
+ *         description: Feature not available in current plan
+ */
 // Recurring Orders (Enterprise Feature)
 router.post('/recurring/process',
     auth([UserRole.OWNER]),

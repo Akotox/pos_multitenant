@@ -4,8 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './core/database/db';
 import { errorHandler } from './core/middlewares/error-handler';
 import { startSubscriptionCron } from './modules/payments/infrastructure/jobs/SubscriptionCron';
-import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './core/config/swagger';
+import { setupSwagger } from './config/swagger';
 import v1Router from './api/v1';
 
 dotenv.config();
@@ -18,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 // Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+setupSwagger(app);
 
 // Routes
 app.use('/api/v1', v1Router);

@@ -1,6 +1,7 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
 export interface ISaleItem {
+    id?: string;
     productId: Types.ObjectId;
     name: string;
     price: number;
@@ -16,6 +17,7 @@ export enum PaymentMethod {
 }
 
 export interface ISale extends Document {
+    id?: string;
     items: ISaleItem[];
     totalAmount: number;
     paymentMethod: PaymentMethod;
@@ -33,6 +35,15 @@ const saleItemSchema = new Schema<ISaleItem>({
     buyingPrice: { type: Number, required: true, default: 0 }, // Cost price at time of sale
     quantity: { type: Number, required: true },
     subtotal: { type: Number, required: true },
+}, {
+        toJSON: {
+            transform: (_doc: any, ret: any) => {
+                ret.id = ret._id;
+                delete ret._id;
+                delete ret.__v;
+                return ret;
+            }
+        }
 });
 
 const saleSchema = new Schema<ISale>(
@@ -48,7 +59,18 @@ const saleSchema = new Schema<ISale>(
         userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         customerId: { type: Schema.Types.ObjectId, ref: 'Customer' },
     },
-    { timestamps: true }
+    { 
+        timestamps: true,
+          toJSON: {
+            transform: (_doc: any, ret: any) => {
+                ret.id = ret._id;
+                delete ret._id;
+                delete ret.__v;
+                return ret;
+            }
+        }
+    
+    }
 );
 
 export const SaleModel = model<ISale>('Sale', saleSchema);

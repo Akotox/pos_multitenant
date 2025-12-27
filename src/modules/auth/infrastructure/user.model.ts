@@ -7,6 +7,7 @@ export enum UserRole {
 }
 
 export interface IUser extends Document {
+    id?: string;
     name: string;
     email: string;
     passwordHash: string;
@@ -30,7 +31,18 @@ const userSchema = new Schema<IUser>(
         tenantId: { type: Schema.Types.ObjectId, ref: 'Tenant', required: true },
         isActive: { type: Boolean, default: true },
     },
-    { timestamps: true }
+    { 
+        timestamps: true,
+        toJSON: {
+            transform: function (doc, ret: any) {
+                ret.id = ret._id;
+                delete ret._id;
+                delete ret.__v;
+                delete ret.passwordHash; // Never expose password hash
+                return ret;
+            }
+        }
+    }
 );
 
 // Compound index to ensure email uniqueness per tenant

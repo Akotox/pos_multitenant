@@ -1,0 +1,28 @@
+{
+  "workspace": {
+    "id": "",
+    "name": "POS Multi-Tenant API"
+  },
+  "collection": {
+    "id": "",
+    "name": "POS API Tests"
+  },
+  "environments": {
+    "local": {
+      "id": "",
+      "name": "Local Development"
+    },
+    "staging": {
+      "id": "",
+      "name": "Staging"
+    },
+    "production": {
+      "id": "",
+      "name": "Production"
+    }
+  },
+  "lastRun": {
+    "timestamp": "",
+    "results": {}
+  }
+}

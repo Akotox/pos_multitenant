@@ -7,6 +7,9 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "seed": "ts-node src/core/database/seeders/index.ts",
+    "seed:admin": "ts-node -e \"import('./src/modules/admin/infrastructure/seeds/createSuperAdmin').then(m => m.seedDefaultAdmins())\"",
+    "seed:pricing": "ts-node -e \"import('./src/modules/pricing/infrastructure/seeds/seedPricingPlans').then(m => m.seedPricingPlans())\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,18 +17,22 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-validator": "^7.3.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.2",
     "node-cron": "^4.2.1",
+    "stripe": "^14.25.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",

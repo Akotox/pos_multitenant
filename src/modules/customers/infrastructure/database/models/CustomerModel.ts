@@ -1,6 +1,7 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
 export interface ICustomer extends Document {
+    id?: string;
     tenantId: Types.ObjectId;
     name: string;
     email?: string;

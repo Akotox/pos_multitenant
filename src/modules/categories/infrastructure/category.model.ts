@@ -1,6 +1,7 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
 export interface ICategory extends Document {
+    id?: string;
     name: string;
     description?: string;
     tenantId: Types.ObjectId;

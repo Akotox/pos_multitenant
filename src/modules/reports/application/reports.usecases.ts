@@ -30,7 +30,7 @@ export class ReportsUseCases {
     }
 
     async getSalesByProduct(tenantId: string) {
-        return await SaleModel.aggregate([
+        const results = await SaleModel.aggregate([
             {
                 $match: {
                     tenantId: new Types.ObjectId(tenantId),
@@ -46,7 +46,18 @@ export class ReportsUseCases {
                 },
             },
             { $sort: { totalRevenue: -1 } },
+            {
+                $project: {
+                    _id: 0,
+                    id: '$_id',
+                    name: 1,
+                    totalQuantity: 1,
+                    totalRevenue: 1,
+                }
+            }
         ]);
+        
+        return results;
     }
 
     async getProfitStats(tenantId: string, startDate?: Date, endDate?: Date) {
@@ -110,6 +121,8 @@ export class ReportsUseCases {
             { $unwind: '$customerDetails' },
             {
                 $project: {
+                    _id: 0,
+                    id: '$_id',
                     name: '$customerDetails.name',
                     email: '$customerDetails.email',
                     totalSpend: 1,
@@ -123,12 +136,20 @@ export class ReportsUseCases {
     }
 
     async getStockAlerts(tenantId: string) {
-        // Low Stock
-        const lowStock = await ProductModel.find({
+        // Low Stock - using .lean() and manual transformation since we're using .find()
+        const lowStockResults = await ProductModel.find({
             tenantId,
             stockQuantity: { $lte: 10 }, // Threshold should ideally be configurable
             isActive: true
-        }).select('name sku stockQuantity').limit(10);
+        }).select('name sku stockQuantity').limit(10).lean();
+
+        // Transform _id to id for each result
+        const lowStock = lowStockResults.map(item => ({
+            id: item._id.toString(),
+            name: item.name,
+            sku: item.sku,
+            stockQuantity: item.stockQuantity
+        }));
 
         return { lowStock };
     }
@@ -150,7 +171,16 @@ export class ReportsUseCases {
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { '_id.day': 1, '_id.hour': 1 } }
+            { $sort: { '_id.day': 1, '_id.hour': 1 } },
+            {
+                $project: {
+                    _id: 0,
+                    hour: '$_id.hour',
+                    dayOfWeek: '$_id.day',
+                    totalSales: 1,
+                    count: 1
+                }
+            }
         ]);
         return heatmap;
     }

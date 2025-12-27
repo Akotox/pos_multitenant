@@ -1,0 +1,2320 @@
+{
+  "info": {
+    "_postman_id": "0b0e2010-2c49-4980-a5ce-a0e42620db8b",
+    "name": "Multitenant Pos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "create-tenant",
+          "id": "3d29c096-ba20-43f8-b415-71e2ff8e160e",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantName\": \"My New Shop\",\n  \"name\": \"John Owner\",\n  \"email\": \"owner@example.com\",\n  \"password\": \"Password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/auth/register",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "321cc874-e5a2-4815-8b73-9195539718c4",
+              "name": "create-tenant",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tenantName\": \"My New Shop\",\n  \"name\": \"John Owner\",\n  \"email\": \"owner@example.com\",\n  \"password\": \"Password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/auth/register",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "169"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"a9-HcrXBdtpY44j+hF7qTb+lliPOSs\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 26 Dec 2025 14:15:13 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"tenant\": {\n        \"id\": \"694e9871d62062ceb6ee3d6a\",\n        \"name\": \"My New Shop\"\n    },\n    \"user\": {\n        \"id\": \"694e9871d62062ceb6ee3d6c\",\n        \"name\": \"John Owner\",\n        \"email\": \"owner@example.com\",\n        \"role\": \"OWNER\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "get-tenant",
+          "id": "f7cb06bb-e44f-4704-a63b-bb386ae64ccf",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/tenants/me",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tenants",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "id": "c6554cf8-2cb8-464e-989b-d2bad8533acb",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@example.com\",\n  \"password\": \"Password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/auth/login",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ad91b95b-f513-4bc8-b4c5-c7075422aca5",
+              "name": "login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"owner@example.com\",\n  \"password\": \"Password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/auth/login",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "395"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"18b-0Z+77bVf/0ULWOlveABsezn9nXE\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 26 Dec 2025 14:20:33 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGU5ODcxZDYyMDYyY2ViNmVlM2Q2YyIsInRlbmFudElkIjoiNjk0ZTk4NzFkNjIwNjJjZWI2ZWUzZDZhIiwicm9sZSI6Ik9XTkVSIiwiaWF0IjoxNzY2NzU4ODMzLCJleHAiOjE3NjY4NDUyMzN9.gQuRP8HTRF7Mwgq6__wcj0jtIYaTKIE5N7lzpCxdwfo\",\n    \"user\": {\n        \"id\": \"694e9871d62062ceb6ee3d6c\",\n        \"name\": \"John Owner\",\n        \"email\": \"owner@example.com\",\n        \"role\": \"OWNER\",\n        \"tenantId\": \"694e9871d62062ceb6ee3d6a\"\n    }\n}"
+            }
+          ]
+        }
+      ],
+      "id": "5d644473-be25-4cb3-9875-14c129071c89"
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "get-categories",
+          "id": "0fc21e23-6a22-4b00-82cf-05540f9a1294",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/categories",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "7cf65db0-fb4b-489e-bfc9-16334c132547",
+              "name": "get-categories",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/categories",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "302"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"12e-ueMcQlGeMW2xT+fcY/cXK3SUjwU\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 10:25:33 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"data\": [\n        {\n            \"name\": \"Phones\",\n            \"description\": \"Devices, gadgets, and accessories\",\n            \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n            \"isActive\": true,\n            \"createdAt\": \"2025-12-27T07:13:24.289Z\",\n            \"updatedAt\": \"2025-12-27T07:13:24.289Z\",\n            \"id\": \"694f8714a3db4f363e91cee5\"\n        }\n    ],\n    \"pagination\": {\n        \"page\": 1,\n        \"limit\": 10,\n        \"total\": 1,\n        \"totalPages\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "add-category",
+          "id": "d4a1dc61-e1ff-4c62-91d2-77b7fee91a5a",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Phones\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/categories",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c7fe6810-0b0c-450d-9d3e-28c8298a607a",
+              "name": "add-category",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Phones\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/categories",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "231"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"e7-1EKSGOJJRyX20IyQjQCkIoP3o1I\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 07:13:24 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"name\": \"Phones\",\n    \"description\": \"Devices, gadgets, and accessories\",\n    \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n    \"isActive\": true,\n    \"createdAt\": \"2025-12-27T07:13:24.289Z\",\n    \"updatedAt\": \"2025-12-27T07:13:24.289Z\",\n    \"id\": \"694f8714a3db4f363e91cee5\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "get-category",
+          "id": "3acc895f-ece7-4e92-8f59-a25d9b172d1c",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electronics\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}"
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/categories/694e9b8ad62062ceb6ee3d73",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "694e9b8ad62062ceb6ee3d73"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "402095bb-0adf-4feb-b24e-6f7b204596b9",
+              "name": "get-category",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Electronics\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}"
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/categories/694e9b8ad62062ceb6ee3d73",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories",
+                    "694e9b8ad62062ceb6ee3d73"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "236"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"ec-rHQcfJ7+ybDgNuENWz7ITGjr9qM\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 07:18:44 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"name\": \"Electronics\",\n    \"description\": \"Devices, gadgets, and accessories\",\n    \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n    \"isActive\": true,\n    \"createdAt\": \"2025-12-26T14:28:26.656Z\",\n    \"updatedAt\": \"2025-12-26T14:28:26.656Z\",\n    \"id\": \"694e9b8ad62062ceb6ee3d73\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "edit-category",
+          "id": "8dcc1568-0b75-460e-9c31-712d8df2fc53",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Gadgets\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/categories/694e9b8ad62062ceb6ee3d73",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "694e9b8ad62062ceb6ee3d73"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ea431c68-8a2c-4a39-9c19-66d52b45abfa",
+              "name": "edit-category",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Gadgets\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/categories/694e9b8ad62062ceb6ee3d73",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories",
+                    "694e9b8ad62062ceb6ee3d73"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "232"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"e8-K1tCJ3M0rYqaE1mVf4F9VdCotfA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 07:21:42 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"name\": \"Gadgets\",\n    \"description\": \"Devices, gadgets, and accessories\",\n    \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n    \"isActive\": true,\n    \"createdAt\": \"2025-12-26T14:28:26.656Z\",\n    \"updatedAt\": \"2025-12-27T07:21:42.117Z\",\n    \"id\": \"694e9b8ad62062ceb6ee3d73\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "New Request",
+          "id": "ad881d58-6a44-4826-9574-4ad8924b6225",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/categories/694e9b8ad62062ceb6ee3d73",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "694e9b8ad62062ceb6ee3d73"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2821467d-9822-4a97-94f4-4303e165d7ed",
+              "name": "delete-category",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/categories/694e9b8ad62062ceb6ee3d73",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories",
+                    "694e9b8ad62062ceb6ee3d73"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "43"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2b-oSB9C9UJoaUkZ5Mu5gkTHkZwuV4\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 07:22:51 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"message\": \"Category deleted successfully\"\n}"
+            }
+          ]
+        }
+      ],
+      "id": "20a15848-2888-4e7a-a679-6839927eecfd"
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "add-products",
+          "id": "38cf2366-08f2-4da5-b324-ec64be67875a",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Samsung Galaxy S24\",\n  \"description\": \"Latest flagship smartphone with advanced camera\",\n  \"price\": 999.99,\n  \"buyingPrice\": 750.00,\n  \"barcode\": \"8806095048017\",\n  \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n  \"categoryId\": \"694f8714a3db4f363e91cee5\",\n  \"stockQuantity\": 40\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/products",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "3cd6a150-190d-4410-a52a-3f500767ef49",
+              "name": "add-product",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Samsung Galaxy S24\",\n  \"description\": \"Latest flagship smartphone with advanced camera\",\n  \"price\": 999.99,\n  \"buyingPrice\": 750.00,\n  \"barcode\": \"8806095048017\",\n  \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n  \"categoryId\": \"694f8714a3db4f363e91cee5\",\n  \"stockQuantity\": 40\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/products",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "481"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1e1-3GLejMga/GxjmQkCqCLkCLcuS/M\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 08:40:47 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"name\": \"Samsung Galaxy S24\",\n    \"sku\": \"PRD-847163-CXN\",\n    \"barcode\": \"8806095048017\",\n    \"description\": \"Latest flagship smartphone with advanced camera\",\n    \"price\": 999.99,\n    \"buyingPrice\": 750,\n    \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n    \"categoryId\": \"694f8714a3db4f363e91cee5\",\n    \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n    \"stockQuantity\": 40,\n    \"isActive\": true,\n    \"createdAt\": \"2025-12-27T08:40:47.173Z\",\n    \"updatedAt\": \"2025-12-27T08:40:47.173Z\",\n    \"id\": \"694f9b8f8facf04a559e2943\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "get-all-products",
+          "id": "0388c69b-6613-4805-b96d-3c6365277664",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Phones\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}"
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/products",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "32444447-4cb9-42cb-ad71-6e6f4ac4d531",
+              "name": "get-all-products",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Phones\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}"
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/products",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "575"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"23f-s9JUqkp53xCv1fcJBrc23mDQL8o\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 10:25:23 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"data\": [\n        {\n            \"name\": \"Samsung Galaxy S24\",\n            \"sku\": \"PRD-847163-CXN\",\n            \"barcode\": \"8806095048017\",\n            \"description\": \"Latest flagship smartphone with advanced camera\",\n            \"price\": 999.99,\n            \"buyingPrice\": 750,\n            \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n            \"categoryId\": {\n                \"name\": \"Phones\",\n                \"id\": \"694f8714a3db4f363e91cee5\"\n            },\n            \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n            \"stockQuantity\": 40,\n            \"isActive\": true,\n            \"createdAt\": \"2025-12-27T08:40:47.173Z\",\n            \"updatedAt\": \"2025-12-27T08:40:47.173Z\",\n            \"id\": \"694f9b8f8facf04a559e2943\"\n        }\n    ],\n    \"pagination\": {\n        \"page\": 1,\n        \"limit\": 10,\n        \"total\": 1,\n        \"totalPages\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "get-product",
+          "id": "36d3e7a3-6b1a-4dc6-acd2-d05b32c6c0d8",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/products/694f97bedc489c97d23a2233",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "694f97bedc489c97d23a2233"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "4dce5b54-582e-4611-bd19-e8874f44a81b",
+              "name": "get-product",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/products/694f97bedc489c97d23a2233",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "694f97bedc489c97d23a2233"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "504"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1f8-kjWp/XJrOa/k843X1pV2J51ODww\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 08:28:05 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"name\": \"Samsung Galaxy S24\",\n    \"sku\": \"PRD-870983-4BI\",\n    \"barcode\": \"8806095048017\",\n    \"description\": \"Latest flagship smartphone with advanced camera\",\n    \"price\": 999.99,\n    \"buyingPrice\": 750,\n    \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n    \"categoryId\": {\n        \"name\": \"Phones\",\n        \"id\": \"694f8714a3db4f363e91cee5\"\n    },\n    \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n    \"stockQuantity\": 25,\n    \"isActive\": true,\n    \"createdAt\": \"2025-12-27T08:24:30.989Z\",\n    \"updatedAt\": \"2025-12-27T08:24:30.989Z\",\n    \"id\": \"694f97bedc489c97d23a2233\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "update-product",
+          "id": "62143376-4127-4fd7-84b5-ad0e833adfe1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Samsung Galaxy S24\",\n  \"description\": \"Latest flagship smartphone with advanced camera\",\n  \"price\": 999.99,\n  \"buyingPrice\": 750.00,\n  \"barcode\": \"8806095048017\",\n  \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n  \"categoryId\": \"694f8714a3db4f363e91cee5\",\n  \"stockQuantity\": 90\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/products/694f97bedc489c97d23a2233",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "694f97bedc489c97d23a2233"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "768d11f7-dea3-4937-bb2d-580ae388e0a9",
+              "name": "update-product",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Samsung Galaxy S24\",\n  \"description\": \"Latest flagship smartphone with advanced camera\",\n  \"price\": 999.99,\n  \"buyingPrice\": 750.00,\n  \"barcode\": \"8806095048017\",\n  \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n  \"categoryId\": \"694f8714a3db4f363e91cee5\",\n  \"stockQuantity\": 40\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/products/694f97bedc489c97d23a2233",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "694f97bedc489c97d23a2233"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "481"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1e1-16F7cGW4ZnOF4fQWi0EXw98qmsQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 08:36:30 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"name\": \"Samsung Galaxy S24\",\n    \"sku\": \"PRD-870983-4BI\",\n    \"barcode\": \"8806095048017\",\n    \"description\": \"Latest flagship smartphone with advanced camera\",\n    \"price\": 999.99,\n    \"buyingPrice\": 750,\n    \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n    \"categoryId\": \"694f8714a3db4f363e91cee5\",\n    \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n    \"stockQuantity\": 40,\n    \"isActive\": true,\n    \"createdAt\": \"2025-12-27T08:24:30.989Z\",\n    \"updatedAt\": \"2025-12-27T08:36:30.664Z\",\n    \"id\": \"694f97bedc489c97d23a2233\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "delete-product",
+          "id": "e616a6cc-303d-492f-92da-d737ff23ccd4",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Samsung Galaxy S24\",\n  \"description\": \"Latest flagship smartphone with advanced camera\",\n  \"price\": 999.99,\n  \"buyingPrice\": 750.00,\n  \"barcode\": \"8806095048017\",\n  \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n  \"categoryId\": \"694f8714a3db4f363e91cee5\",\n  \"stockQuantity\": 40\n}"
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/products/694f97bedc489c97d23a2233",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "694f97bedc489c97d23a2233"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9f7e870a-874d-4e99-a79f-5d86c59bf802",
+              "name": "delete-product",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Samsung Galaxy S24\",\n  \"description\": \"Latest flagship smartphone with advanced camera\",\n  \"price\": 999.99,\n  \"buyingPrice\": 750.00,\n  \"barcode\": \"8806095048017\",\n  \"imageUrl\": \"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g-sm-s921.jpg\",\n  \"categoryId\": \"694f8714a3db4f363e91cee5\",\n  \"stockQuantity\": 40\n}"
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/products/694f97bedc489c97d23a2233",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "694f97bedc489c97d23a2233"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "42"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2a-a+2htZNpkCDaj0ausIFBiheaYZ4\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 08:40:25 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"message\": \"Product deleted successfully\"\n}"
+            }
+          ]
+        }
+      ],
+      "id": "f8bff657-648a-4e32-975a-5426d28655f7"
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "inventory",
+          "id": "9fcd25ad-243f-44cf-bfb8-a23344c112f9",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Phones\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}"
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/inventory/history/694f97bedc489c97d23a2233",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "inventory",
+                "history",
+                "694f97bedc489c97d23a2233"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "86200092-52ae-4e63-9b51-af770c8c9fd1",
+              "name": "inventory-movement",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Phones\",\n  \"description\": \"Devices, gadgets, and accessories\"\n}"
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/inventory/history/694f97bedc489c97d23a2233",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "inventory",
+                    "history",
+                    "694f97bedc489c97d23a2233"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "735"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2df-3cTEC2BoJ51qsEdQCyMnOl9Hm2s\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 09:25:56 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n    {\n        \"productId\": {\n            \"name\": \"Samsung Galaxy S24\",\n            \"sku\": \"PRD-870983-4BI\",\n            \"barcode\": \"8806095048017\",\n            \"id\": \"694f97bedc489c97d23a2233\"\n        },\n        \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n        \"type\": \"ADJUSTMENT\",\n        \"quantity\": 20,\n        \"reason\": \"Manual stock adjustment via product update (+20)\",\n        \"createdAt\": \"2025-12-27T09:14:57.686Z\",\n        \"updatedAt\": \"2025-12-27T09:14:57.686Z\",\n        \"id\": \"694fa391cafb744bb6864a0c\"\n    },\n    {\n        \"productId\": {\n            \"name\": \"Samsung Galaxy S24\",\n            \"sku\": \"PRD-870983-4BI\",\n            \"barcode\": \"8806095048017\",\n            \"id\": \"694f97bedc489c97d23a2233\"\n        },\n        \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n        \"type\": \"ADJUSTMENT\",\n        \"quantity\": 10,\n        \"reason\": \"Manual stock adjustment via product update (+10)\",\n        \"createdAt\": \"2025-12-27T09:12:26.302Z\",\n        \"updatedAt\": \"2025-12-27T09:12:26.302Z\",\n        \"id\": \"694fa2fa9e91bcc7f0e48de9\"\n    }\n]"
+            }
+          ]
+        }
+      ],
+      "id": "4de11c52-3787-4862-a47d-3fc58a1c949a"
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "add-customer",
+          "id": "36671384-9ecd-4b7f-88dc-e0129077eb6e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+263771234567\",\n  \"address\": \"123 Main Street, Harare, Zimbabwe\",\n  \"notes\": \"Preferred customer, offers bulk discounts\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/customers",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-all-customers",
+          "id": "89878892-a829-451c-a0f3-7b817f96e2c8",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+263771234567\",\n  \"address\": \"123 Main Street, Harare, Zimbabwe\",\n  \"notes\": \"Preferred customer, offers bulk discounts\"\n}"
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/customers",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "customers"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "1cc4bc77-e144-469f-a4fe-c03dab39f4b2",
+              "name": "all-customers",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+263771234567\",\n  \"address\": \"123 Main Street, Harare, Zimbabwe\",\n  \"notes\": \"Preferred customer, offers bulk discounts\"\n}"
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/customers",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "customers"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "name": "Content-Type",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "391"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"187-A88wv15VfOSaoLfh6VAttv6G2U0\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 10:31:45 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"data\": [\n        {\n            \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n            \"name\": \"John Doe\",\n            \"email\": \"john.doe@example.com\",\n            \"phone\": \"+263771234567\",\n            \"address\": \"123 Main Street, Harare, Zimbabwe\",\n            \"notes\": \"Preferred customer, offers bulk discounts\",\n            \"createdAt\": \"2025-12-27T10:08:18.275Z\",\n            \"updatedAt\": \"2025-12-27T10:08:18.275Z\",\n            \"id\": \"694fb01292a2b4cf09d63e09\"\n        }\n    ],\n    \"pagination\": {\n        \"page\": 1,\n        \"limit\": 10,\n        \"total\": 1,\n        \"totalPages\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "get-customer",
+          "id": "210dd811-41da-4b80-98a2-32919ae67121",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+263771234567\",\n  \"address\": \"123 Main Street, Harare, Zimbabwe\",\n  \"notes\": \"Preferred customer, offers bulk discounts\"\n}"
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/customers/694fabab1ea9d1c42c6749cc",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "customers",
+                "694fabab1ea9d1c42c6749cc"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete-customer",
+          "id": "d5f95198-8f51-4c38-8636-d5956f9e19a8",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+263771234567\",\n  \"address\": \"123 Main Street, Harare, Zimbabwe\",\n  \"notes\": \"Preferred customer, offers bulk discounts\"\n}"
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/customers/694fabab1ea9d1c42c6749cc",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "customers",
+                "694fabab1ea9d1c42c6749cc"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "edit-customer",
+          "id": "12607f82-e006-4647-bf9e-e4477d675801",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"akotoxmpimbo@gmail.com\",\n  \"phone\": \"+263771234567\",\n  \"address\": \"123 Main Street, Harare, Zimbabwe\",\n  \"notes\": \"Preferred customer, offers bulk discounts\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/customers/694fb01292a2b4cf09d63e09",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "customers",
+                "694fb01292a2b4cf09d63e09"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "b102b75e-8e7f-4662-bb9b-da32d10636b0"
+    },
+    {
+      "name": "Sales",
+      "item": [
+        {
+          "name": "create-sale",
+          "id": "c220503a-9b1a-43b2-857d-2d435b9ac17e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"694f9b8f8facf04a559e2943\",\n      \"quantity\": 5\n    }\n  ],\n  \"paymentMethod\": \"CASH\",\n  \"customerId\": \"694fb01292a2b4cf09d63e09\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/sales",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "sales"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "184680a4-5cad-41f5-a41e-02aeddeaf689",
+              "name": "create-sale",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"694f9b8f8facf04a559e2943\",\n      \"quantity\": 5\n    }\n  ],\n  \"paymentMethod\": \"CASH\",\n  \"customerId\": \"694fb01292a2b4cf09d63e09\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/sales",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "sales"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "456"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1c8-CL8Vz7GmLjnVnY32ARyZozT68hI\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 10:57:18 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"items\": [\n        {\n            \"productId\": \"694f9b8f8facf04a559e2943\",\n            \"name\": \"Samsung Galaxy S24\",\n            \"price\": 999.99,\n            \"buyingPrice\": 750,\n            \"quantity\": 5,\n            \"subtotal\": 4999.95,\n            \"_id\": \"694fbb8e8fe30e9344b43c1b\"\n        }\n    ],\n    \"totalAmount\": 4999.95,\n    \"paymentMethod\": \"CASH\",\n    \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n    \"userId\": \"694e9871d62062ceb6ee3d6c\",\n    \"customerId\": \"694fb01292a2b4cf09d63e09\",\n    \"_id\": \"694fbb8e8fe30e9344b43c1a\",\n    \"createdAt\": \"2025-12-27T10:57:18.944Z\",\n    \"updatedAt\": \"2025-12-27T10:57:18.944Z\",\n    \"__v\": 0\n}"
+            }
+          ]
+        },
+        {
+          "name": "get-sale",
+          "id": "2fe7c8be-33fd-41bd-bd85-fb31b6f3ffea",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"694f9b8f8facf04a559e2943\",\n      \"quantity\": 5\n    }\n  ],\n  \"paymentMethod\": \"CASH\",\n  \"customerId\": \"694fb01292a2b4cf09d63e09\"\n}"
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/sales/694fbb8e8fe30e9344b43c1a",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "sales",
+                "694fbb8e8fe30e9344b43c1a"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "3d08eb37-c782-452e-af66-82a6c7459d95",
+              "name": "get-sale",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"694f9b8f8facf04a559e2943\",\n      \"quantity\": 5\n    }\n  ],\n  \"paymentMethod\": \"CASH\",\n  \"customerId\": \"694fb01292a2b4cf09d63e09\"\n}"
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/sales/694fbb8e8fe30e9344b43c1a",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "sales",
+                    "694fbb8e8fe30e9344b43c1a"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "446"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1be-Fd5v2IEU4D2nAE8obu1vwgHdieU\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 11:26:24 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-27T11:26:45.617Z",
+              "body": "{\n    \"items\": [\n        {\n            \"productId\": \"694f9b8f8facf04a559e2943\",\n            \"name\": \"Samsung Galaxy S24\",\n            \"price\": 999.99,\n            \"buyingPrice\": 750,\n            \"quantity\": 5,\n            \"subtotal\": 4999.95,\n            \"id\": \"694fbb8e8fe30e9344b43c1b\"\n        }\n    ],\n    \"totalAmount\": 4999.95,\n    \"paymentMethod\": \"CASH\",\n    \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n    \"userId\": \"694e9871d62062ceb6ee3d6c\",\n    \"customerId\": \"694fb01292a2b4cf09d63e09\",\n    \"createdAt\": \"2025-12-27T10:57:18.944Z\",\n    \"updatedAt\": \"2025-12-27T10:57:18.944Z\",\n    \"id\": \"694fbb8e8fe30e9344b43c1a\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "get-all-sales",
+          "id": "fd017ed5-553f-45bc-aa3b-7821fe6900e5",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"694f9b8f8facf04a559e2943\",\n      \"quantity\": 5\n    }\n  ],\n  \"paymentMethod\": \"CASH\",\n  \"customerId\": \"694fb01292a2b4cf09d63e09\"\n}"
+            },
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/sales",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "sales"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "d80fde6b-bafd-472a-917b-1d7882fccb4f",
+              "name": "get-all-sales",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"694f9b8f8facf04a559e2943\",\n      \"quantity\": 5\n    }\n  ],\n  \"paymentMethod\": \"CASH\",\n  \"customerId\": \"694fb01292a2b4cf09d63e09\"\n}"
+                },
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/sales",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "sales"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "517"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"205-pKUpCO4FozQOl6vm3PliwXX4iBE\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 11:26:29 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-27T11:26:38.231Z",
+              "body": "{\n    \"data\": [\n        {\n            \"items\": [\n                {\n                    \"productId\": \"694f9b8f8facf04a559e2943\",\n                    \"name\": \"Samsung Galaxy S24\",\n                    \"price\": 999.99,\n                    \"buyingPrice\": 750,\n                    \"quantity\": 5,\n                    \"subtotal\": 4999.95,\n                    \"id\": \"694fbb8e8fe30e9344b43c1b\"\n                }\n            ],\n            \"totalAmount\": 4999.95,\n            \"paymentMethod\": \"CASH\",\n            \"tenantId\": \"694e9871d62062ceb6ee3d6a\",\n            \"userId\": \"694e9871d62062ceb6ee3d6c\",\n            \"customerId\": \"694fb01292a2b4cf09d63e09\",\n            \"createdAt\": \"2025-12-27T10:57:18.944Z\",\n            \"updatedAt\": \"2025-12-27T10:57:18.944Z\",\n            \"id\": \"694fbb8e8fe30e9344b43c1a\"\n        }\n    ],\n    \"pagination\": {\n        \"page\": 1,\n        \"limit\": 10,\n        \"total\": 1,\n        \"totalPages\": 1\n    }\n}"
+            }
+          ]
+        }
+      ],
+      "id": "fd4c41b8-58f5-4cf3-8a0a-aba480c30dec"
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "dashboard",
+          "id": "b090adf4-8ef8-4371-a293-4d6741674cfa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/reports/dashboard",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "dashboard"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c16b5f42-a145-43b5-9c01-0dd878ad429d",
+              "name": "dashboard",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/reports/dashboard",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "reports",
+                    "dashboard"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "211"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"d3-+YELEp1selJ7EitVXxhlH8sqqdo\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 11:44:55 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-27T11:45:51.023Z",
+              "body": "{\n    \"dailySales\": {\n        \"_id\": null,\n        \"totalSales\": 4999.95,\n        \"orderCount\": 1\n    },\n    \"profitStats\": {\n        \"totalRevenue\": 4999.95,\n        \"totalCost\": 3750,\n        \"grossProfit\": 1249.9499999999998,\n        \"profitMargin\": 24.999249992499923\n    },\n    \"alerts\": {\n        \"lowStock\": []\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "advanced",
+          "id": "d65a5f4a-fee2-473d-96cb-f6e7e4524752",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/reports/advanced",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "advanced"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c213eb88-41be-4f55-a152-648fc4435ffe",
+              "name": "advanced",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/reports/advanced",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "reports",
+                    "advanced"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "255"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"ff-PqbqK19j8VYvoy2Fidr1OQR8YAg\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 11:45:10 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-27T11:45:23.136Z",
+              "body": "{\n    \"topCustomers\": [\n        {\n            \"totalSpend\": 4999.95,\n            \"orderCount\": 1,\n            \"lastPurchase\": \"2025-12-27T10:57:18.944Z\",\n            \"id\": \"694fb01292a2b4cf09d63e09\",\n            \"name\": \"John Doe\",\n            \"email\": \"akotoxmpimbo@gmail.com\"\n        }\n    ],\n    \"salesHeatmap\": [\n        {\n            \"totalSales\": 4999.95,\n            \"count\": 1,\n            \"hour\": 10,\n            \"dayOfWeek\": 7\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "daily-sales",
+          "id": "1a678c31-2b40-4c05-bbb2-70c8a3c8638d",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/reports/daily-sales",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "daily-sales"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2dc9de9b-7d88-435a-86b4-c9c7cdb55532",
+              "name": "daily-sales",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/reports/daily-sales",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "reports",
+                    "daily-sales"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "48"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"30-p1qILsid6yuI5pveCgO6M/qUh64\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 11:47:07 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-27T11:47:25.025Z",
+              "body": "{\n    \"_id\": null,\n    \"totalSales\": 4999.95,\n    \"orderCount\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "product-performance",
+          "id": "13061e12-81e6-4c66-bdcc-1f25bd588cb9",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASEURL}}/api/v1/reports/product-performance",
+              "host": [
+                "{{BASEURL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "product-performance"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "12a032ed-09f1-44a4-b74b-9002e2d44e06",
+              "name": "product-performance",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASEURL}}/api/v1/reports/product-performance",
+                  "host": [
+                    "{{BASEURL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "reports",
+                    "product-performance"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "104"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"68-v2ny30TshELZA2gQMlxNoNohqB0\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Dec 2025 11:53:01 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-27T11:54:30.725Z",
+              "body": "[\n    {\n        \"name\": \"Samsung Galaxy S24\",\n        \"totalQuantity\": 5,\n        \"totalRevenue\": 4999.95,\n        \"id\": \"694f9b8f8facf04a559e2943\"\n    }\n]"
+            }
+          ]
+        }
+      ],
+      "id": "4e647f99-b3f9-4815-a17d-d722820f73e7"
+    }
+  ],
+  "variable": [
+    {
+      "id": "0ef73ee4-0b06-4806-822b-d768a9e95ee8",
+      "key": "JWT",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

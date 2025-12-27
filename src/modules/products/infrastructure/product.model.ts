@@ -1,6 +1,7 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
 export interface IProduct extends Document {
+    id?: string;
     name: string;
     sku: string;
     barcode?: string;

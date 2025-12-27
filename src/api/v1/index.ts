@@ -7,6 +7,7 @@ import paymentsRoutes from '../../modules/payments/interfaces/http/routes/paymen
 import reportsRoutes from '../../modules/reports/interfaces/reports.routes';
 import adminRoutes from '../../modules/admin/interfaces/routes/admin.routes';
 import pricingRoutes from '../../modules/pricing/interfaces/routes/pricing.routes';
+import orderRoutes from '../../modules/orders/interfaces/routes/order.routes';
 
 const router = Router();
 
@@ -27,5 +28,6 @@ router.use('/payments', paymentsRoutes);
 router.use('/reports', reportsRoutes);
 router.use('/admin', adminRoutes);
 router.use('/pricing', pricingRoutes);
+router.use('/orders', orderRoutes);
 
 export default router;

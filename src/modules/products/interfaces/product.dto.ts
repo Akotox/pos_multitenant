@@ -5,6 +5,7 @@ export const createProductSchema = z.object({
     description: z.string().optional(),
     price: z.number().min(0),
     buyingPrice: z.number().min(0),
+    barcode: z.string().optional(),
     imageUrl: z.string().url().optional(),
     categoryId: z.string(),
     stockQuantity: z.number().optional().default(0),

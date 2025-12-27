@@ -31,9 +31,23 @@ export class InventoryController {
         try {
             const tenantId = req.tenantId!;
             const { productId } = req.params;
+            const page = req.query.page ? parseInt(req.query.page as string) : undefined;
+            const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
 
-            const result = await this.inventoryRepository.getProductHistory(productId, tenantId);
-            res.json(result);
+            const { movements, total } = await this.inventoryRepository.getProductHistory(productId, tenantId, { page, limit });
+
+            const currentPage = page || 1;
+            const pageLimit = limit || 10;
+
+            res.json({
+                data: movements,
+                pagination: {
+                    page: currentPage,
+                    limit: pageLimit,
+                    total,
+                    totalPages: Math.ceil(total / pageLimit)
+                }
+            });
         } catch (error) {
             next(error);
         }

@@ -2,5 +2,5 @@ import { IStockMovement } from '../infrastructure/database/models/StockMovementM
 
 export interface IInventoryRepository {
     recordMovement(movement: Partial<IStockMovement>, session?: any): Promise<IStockMovement>;
-    getProductHistory(productId: string, tenantId: string): Promise<IStockMovement[]>;
+    getProductHistory(productId: string, tenantId: string, options?: { page?: number; limit?: number }): Promise<{ movements: IStockMovement[]; total: number }>;
 }

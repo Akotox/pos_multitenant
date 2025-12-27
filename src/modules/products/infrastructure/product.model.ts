@@ -3,6 +3,7 @@ import { Schema, model, Document, Types } from 'mongoose';
 export interface IProduct extends Document {
     name: string;
     sku: string;
+    barcode?: string;
     description?: string;
     price: number;
     buyingPrice: number;
@@ -19,6 +20,7 @@ const productSchema = new Schema<IProduct>(
     {
         name: { type: String, required: true },
         sku: { type: String, required: true },
+        barcode: { type: String },
         description: { type: String },
         price: { type: Number, required: true, min: 0 },
         buyingPrice: { type: Number, required: true, min: 0, default: 0 },
@@ -28,7 +30,17 @@ const productSchema = new Schema<IProduct>(
         stockQuantity: { type: Number, default: 0 },
         isActive: { type: Boolean, default: true },
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toJSON: {
+            transform: (_doc: any, ret: any) => {
+                ret.id = ret._id;
+                delete ret._id;
+                delete ret.__v;
+                return ret;
+            }
+        }
+    }
 );
 
 // Unique SKU per tenant

@@ -24,8 +24,22 @@ export class SalesController {
     getAll = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const tenantId = req.tenantId!;
-            const result = await this.salesRepository.findAll(tenantId);
-            res.json(result);
+            const page = req.query.page ? parseInt(req.query.page as string) : undefined;
+            const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+            const { sales, total } = await this.salesRepository.findAll(tenantId, { page, limit });
+
+            const currentPage = page || 1;
+            const pageLimit = limit || 10;
+
+            res.json({
+                data: sales,
+                pagination: {
+                    page: currentPage,
+                    limit: pageLimit,
+                    total,
+                    totalPages: Math.ceil(total / pageLimit)
+                }
+            });
         } catch (error) {
             next(error);
         }

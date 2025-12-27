@@ -25,7 +25,17 @@ const stockMovementSchema = new Schema<IStockMovement>(
         reason: { type: String },
         referenceId: { type: String },
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toJSON: {
+            transform: (_doc: any, ret: any) => {
+                ret.id = ret._id;
+                delete ret._id;
+                delete ret.__v;
+                return ret;
+            }
+        }
+    }
 );
 
 // Index for fast lookups per product and tenant

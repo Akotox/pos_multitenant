@@ -1,13 +1,30 @@
 import { ICustomerRepository } from '../../../domain/ICustomerRepository';
 import { CustomerModel, ICustomer } from '../models/CustomerModel';
+import { ConflictError } from '../../../../../core/errors/app-error';
 
 export class CustomerRepositoryImpl implements ICustomerRepository {
     async create(customer: Partial<ICustomer>): Promise<ICustomer> {
-        return await CustomerModel.create(customer);
+        try {
+            return await CustomerModel.create(customer);
+        } catch (error: any) {
+            if (error.code === 11000) {
+                const field = error.keyPattern?.email ? 'email' : 'phone';
+                throw new ConflictError(`Customer with this ${field} already exists`);
+            }
+            throw error;
+        }
     }
 
     async update(id: string, tenantId: string, data: Partial<ICustomer>): Promise<ICustomer | null> {
-        return await CustomerModel.findOneAndUpdate({ _id: id, tenantId }, data, { new: true });
+        try {
+            return await CustomerModel.findOneAndUpdate({ _id: id, tenantId }, data, { new: true });
+        } catch (error: any) {
+            if (error.code === 11000) {
+                const field = error.keyPattern?.email ? 'email' : 'phone';
+                throw new ConflictError(`Customer with this ${field} already exists`);
+            }
+            throw error;
+        }
     }
 
     async findById(id: string, tenantId: string): Promise<ICustomer | null> {

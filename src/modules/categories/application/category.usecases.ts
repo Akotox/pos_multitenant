@@ -9,8 +9,20 @@ export class CategoryUseCases {
         return await this.categoryRepository.create({ ...dto, tenantId: tenantId as any });
     }
 
-    async getAll(tenantId: string) {
-        return await this.categoryRepository.findAll(tenantId);
+    async getAll(tenantId: string, page?: number, limit?: number) {
+        const { categories, total } = await this.categoryRepository.findAll(tenantId, { page, limit });
+        const currentPage = page || 1;
+        const pageLimit = limit || 10;
+
+        return {
+            data: categories,
+            pagination: {
+                page: currentPage,
+                limit: pageLimit,
+                total,
+                totalPages: Math.ceil(total / pageLimit)
+            }
+        };
     }
 
     async getById(tenantId: string, id: string) {

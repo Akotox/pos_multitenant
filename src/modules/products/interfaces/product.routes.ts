@@ -4,9 +4,11 @@ import { ProductUseCases } from '../application/product.usecases';
 import { ProductRepository } from '../infrastructure/product.repository.impl';
 import { auth } from '../../../core/middlewares/auth';
 import { UserRole } from '../../auth/infrastructure/user.model';
+import { InventoryRepositoryImpl } from '../../inventory/infrastructure/database/repositories/InventoryRepositoryImpl';
 
 const productRepository = new ProductRepository();
-const productUseCases = new ProductUseCases(productRepository);
+const inventoryRepository = new InventoryRepositoryImpl();
+const productUseCases = new ProductUseCases(productRepository, inventoryRepository);
 const productController = new ProductController(productUseCases);
 
 const router = Router();

@@ -6,8 +6,20 @@ export class ProductRepository implements IProductRepository {
         return await ProductModel.create(productData);
     }
 
-    async findAll(tenantId: string): Promise<IProduct[]> {
-        return await ProductModel.find({ tenantId, isActive: true }).populate('categoryId', 'name');
+    async findAll(tenantId: string, options?: { page?: number; limit?: number }): Promise<{ products: IProduct[]; total: number }> {
+        const { page = 1, limit = 10 } = options || {};
+        const skip = (page - 1) * limit;
+
+        const [products, total] = await Promise.all([
+            ProductModel.find({ tenantId, isActive: true })
+                .populate('categoryId', 'name')
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 }),
+            ProductModel.countDocuments({ tenantId, isActive: true })
+        ]);
+
+        return { products, total };
     }
 
     async findById(id: string, tenantId: string): Promise<IProduct | null> {

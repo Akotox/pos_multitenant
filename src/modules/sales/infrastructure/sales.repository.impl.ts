@@ -8,8 +8,19 @@ export class SalesRepository implements ISalesRepository {
         return await sale.save({ session });
     }
 
-    async findAll(tenantId: string): Promise<ISale[]> {
-        return await SaleModel.find({ tenantId }).sort({ createdAt: -1 });
+    async findAll(tenantId: string, options?: { page?: number; limit?: number }): Promise<{ sales: ISale[]; total: number }> {
+        const { page = 1, limit = 10 } = options || {};
+        const skip = (page - 1) * limit;
+
+        const [sales, total] = await Promise.all([
+            SaleModel.find({ tenantId })
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 }),
+            SaleModel.countDocuments({ tenantId })
+        ]);
+
+        return { sales, total };
     }
 
     async findById(id: string, tenantId: string): Promise<ISale | null> {

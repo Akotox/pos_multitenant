@@ -8,6 +8,7 @@ import inventoryRoutes from '../../modules/inventory/interfaces/http/routes/inve
 import paymentsRoutes from '../../modules/payments/interfaces/http/routes/payments.routes';
 import reportsRoutes from '../../modules/reports/interfaces/reports.routes';
 import adminRoutes from '../../modules/admin/interfaces/routes/admin.routes';
+import adminEmailRoutes from '../../modules/admin/interfaces/routes/email.routes';
 import pricingRoutes from '../../modules/pricing/interfaces/routes/pricing.routes';
 import orderRoutes from '../../modules/orders/interfaces/routes/order.routes';
 import salesRoutes from '../../modules/sales/interfaces/sales.routes';
@@ -34,6 +35,7 @@ router.use('/inventory', inventoryRoutes);
 router.use('/payments', paymentsRoutes);
 router.use('/reports', reportsRoutes);
 router.use('/admin', adminRoutes);
+router.use('/admin/email', adminEmailRoutes);
 router.use('/pricing', pricingRoutes);
 router.use('/orders', orderRoutes);
 router.use('/sales', salesRoutes);

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ProcessSubscriptionPaymentUseCase } from '../../../application/use-cases/ProcessSubscriptionPaymentUseCase';
 import { ISubscriptionRepository } from '../../../domain/repositories/SubscriptionRepository';
+import { emailNotificationService } from '../../../../../core/services/email/EmailNotificationService';
 
 export class PaymentsController {
     constructor(
@@ -35,6 +36,23 @@ export class PaymentsController {
                 amount || 29.99,
                 `MOCK_TX_${Date.now()}`
             );
+
+            // Send payment success email
+            if (result) {
+                try {
+                    await emailNotificationService.sendPaymentSuccess({
+                        email: req.userEmail || 'owner@company.com', // Get from user context
+                        recipientName: req.userName || 'Account Owner',
+                        amount: `$${amount || 29.99}`,
+                        currency: 'USD',
+                        paymentMethod: 'Credit Card',
+                        transactionId: `MOCK_TX_${Date.now()}`,
+                        invoiceNumber: `INV-${Date.now()}`
+                    });
+                } catch (emailError) {
+                    console.error('Failed to send payment success email:', emailError);
+                }
+            }
 
             res.json(result);
         } catch (error) {

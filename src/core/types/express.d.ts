@@ -8,7 +8,14 @@ declare global {
                 tenantId: string;
                 role: string;
             };
+            admin?: {
+                id: string;
+                role: string;
+                email: string;
+            };
             tenantId?: string;
+            userName?: string;
+            userEmail?: string;
         }
     }
 }

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { ISalesRepository } from '../domain/sales.repository';
 import { IProductRepository } from '../../products/domain/product.repository';
 import { IInventoryRepository } from '../../inventory/domain/IInventoryRepository';
@@ -15,68 +16,81 @@ export class ProcessSaleUseCase {
     ) { }
 
     async execute(tenantId: string, userId: string, dto: CreateSaleDto) {
-        // Validate customer if provided
-        if (dto.customerId) {
-            const customer = await this.customerRepository.findById(dto.customerId, tenantId);
-            if (!customer) {
-                throw new NotFoundError('Customer not found');
-            }
-        }
+        const session = await mongoose.startSession();
+        session.startTransaction();
 
-        const saleItems = [];
-        let totalAmount = 0;
-
-        // Validate products and calculate totals
-        for (const item of dto.items) {
-            const product = await this.productRepository.findById(item.productId, tenantId);
-            if (!product) {
-                throw new NotFoundError(`Product not found: ${item.productId}`);
+        try {
+            // Validate customer if provided
+            if (dto.customerId) {
+                const customer = await this.customerRepository.findById(dto.customerId, tenantId);
+                if (!customer) {
+                    throw new NotFoundError('Customer not found');
+                }
             }
 
-            // Stock check
-            if (product.stockQuantity < item.quantity) {
-                throw new BadRequestError(`Insufficient stock for product: ${product.name}`);
+            const saleItems = [];
+            let totalAmount = 0;
+
+            for (const item of dto.items) {
+                const product = await this.productRepository.findById(item.productId, tenantId);
+                if (!product) {
+                    throw new NotFoundError(`Product not found: ${item.productId}`);
+                }
+
+                // Stock check only (deduction happens later in transaction)
+                if (product.stockQuantity < item.quantity) {
+                    throw new BadRequestError(`Insufficient stock for product: ${product.name}`);
+                }
+
+                const subtotal = product.price * item.quantity;
+                totalAmount += subtotal;
+
+                saleItems.push({
+                    productId: product._id as any,
+                    name: product.name,
+                    price: product.price,
+                    buyingPrice: product.buyingPrice || 0,
+                    quantity: item.quantity,
+                    subtotal,
+                });
             }
 
-            const subtotal = product.price * item.quantity;
-            totalAmount += subtotal;
+            const sale = await this.salesRepository.create(
+                {
+                    items: saleItems,
+                    totalAmount,
+                    paymentMethod: dto.paymentMethod,
+                    tenantId: tenantId as any,
+                    userId: userId as any,
+                    customerId: dto.customerId ? (dto.customerId as any) : undefined,
+                },
+                session
+            );
 
-            saleItems.push({
-                productId: product._id as any,
-                name: product.name,
-                price: product.price,
-                buyingPrice: product.buyingPrice || 0,
-                quantity: item.quantity,
-                subtotal,
-            });
+            // 3. Update stock and record movements (inside transaction)
+            for (const item of saleItems) {
+                // Deduct stock
+                await this.productRepository.updateStock(item.productId.toString(), tenantId, -item.quantity, session);
+
+                // Record stock movement
+                await this.inventoryRepository.recordMovement({
+                    productId: item.productId as any,
+                    tenantId: tenantId as any,
+                    type: StockMovementType.SALE,
+                    quantity: item.quantity,
+                    reason: `Sale ${sale._id}`,
+                    referenceId: (sale._id as any).toString(),
+                });
+            }
+
+            await session.commitTransaction();
+            return sale;
+        } catch (error) {
+            await session.abortTransaction();
+            throw error;
+        } finally {
+            session.endSession();
         }
-
-        // Create sale
-        const sale = await this.salesRepository.create({
-            items: saleItems,
-            totalAmount,
-            paymentMethod: dto.paymentMethod,
-            tenantId: tenantId as any,
-            userId: userId as any,
-            customerId: dto.customerId ? (dto.customerId as any) : undefined,
-        });
-
-        // Update stock and record movements
-        for (const item of saleItems) {
-            // Deduct stock
-            await this.productRepository.updateStock(item.productId.toString(), tenantId, -item.quantity);
-
-            // Record stock movement
-            await this.inventoryRepository.recordMovement({
-                productId: item.productId as any,
-                tenantId: tenantId as any,
-                type: StockMovementType.SALE,
-                quantity: item.quantity,
-                reason: `Sale ${sale._id}`,
-                referenceId: (sale._id as any).toString(),
-            });
-        }
-
-        return sale;
     }
 }
+

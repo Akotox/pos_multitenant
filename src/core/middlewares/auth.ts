@@ -8,6 +8,12 @@ interface JwtPayload {
     role: string;
 }
 
+interface AdminJwtPayload {
+    id: string;
+    role: string;
+    email: string;
+}
+
 export const auth = (roles: string[] = []) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -37,4 +43,33 @@ export const auth = (roles: string[] = []) => {
             next(error);
         }
     };
+};
+
+export const adminAuth = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            throw new UnauthorizedError('Admin authentication token missing or invalid');
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(
+            token,
+            process.env.ADMIN_JWT_SECRET || 'your_super_secret_admin_jwt_key'
+        ) as AdminJwtPayload;
+
+        // Check if user has admin role
+        const adminRoles = ['SUPER_ADMIN', 'ADMIN', 'BILLING_ADMIN', 'SUPPORT'];
+        if (!adminRoles.includes(decoded.role)) {
+            throw new ForbiddenError('Admin access required');
+        }
+
+        req.admin = decoded;
+        next();
+    } catch (error) {
+        if (error instanceof jwt.JsonWebTokenError) {
+            return next(new UnauthorizedError('Invalid admin token'));
+        }
+        next(error);
+    }
 };

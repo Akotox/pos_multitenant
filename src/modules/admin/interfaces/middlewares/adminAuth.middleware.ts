@@ -3,16 +3,7 @@ import jwt from 'jsonwebtoken';
 import { UnauthorizedError, ForbiddenError } from '../../../../core/errors/app-error';
 import { AdminPermission } from '../../domain/entities/Admin';
 
-interface AdminRequest extends Request {
-    admin?: {
-        adminId: string;
-        email: string;
-        role: string;
-        permissions: AdminPermission[];
-    };
-}
-
-export const adminAuthMiddleware = (req: AdminRequest, res: Response, next: NextFunction) => {
+export const adminAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', '');
         
@@ -34,7 +25,7 @@ export const adminAuthMiddleware = (req: AdminRequest, res: Response, next: Next
 };
 
 export const requirePermission = (permission: AdminPermission) => {
-    return (req: AdminRequest, res: Response, next: NextFunction) => {
+    return (req: Request, res: Response, next: NextFunction) => {
         if (!req.admin) {
             return next(new UnauthorizedError('Authentication required'));
         }
@@ -48,7 +39,7 @@ export const requirePermission = (permission: AdminPermission) => {
 };
 
 export const requireAnyPermission = (permissions: AdminPermission[]) => {
-    return (req: AdminRequest, res: Response, next: NextFunction) => {
+    return (req: Request, res: Response, next: NextFunction) => {
         if (!req.admin) {
             return next(new UnauthorizedError('Authentication required'));
         }

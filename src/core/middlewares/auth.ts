@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UnauthorizedError, ForbiddenError } from '../errors/app-error';
+import { AdminPermission } from '../../modules/admin/domain/entities/Admin';
 
 interface JwtPayload {
     id: string;
@@ -9,9 +10,10 @@ interface JwtPayload {
 }
 
 interface AdminJwtPayload {
-    id: string;
-    role: string;
+    adminId: string;
     email: string;
+    role: string;
+    permissions: AdminPermission[];
 }
 
 export const auth = (roles: string[] = []) => {

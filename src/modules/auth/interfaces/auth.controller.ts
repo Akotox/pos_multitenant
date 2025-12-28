@@ -3,6 +3,7 @@ import { RegisterUseCase } from '../application/register.usecase';
 import { LoginUseCase } from '../application/login.usecase';
 import { registerSchema, loginSchema } from './auth.dto';
 import { emailNotificationService } from '../../../core/services/email/EmailNotificationService';
+import { ZodError } from 'zod';
 
 export class AuthController {
     constructor(
@@ -43,6 +44,16 @@ export class AuthController {
             
             res.status(201).json(result);
         } catch (error) {
+            if (error instanceof ZodError) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Validation error',
+                    errors: error.issues.map(issue => ({
+                        field: issue.path.join('.'),
+                        message: issue.message
+                    }))
+                });
+            }
             next(error);
         }
     };
@@ -53,6 +64,16 @@ export class AuthController {
             const result = await this.loginUseCase.execute(validatedData);
             res.json(result);
         } catch (error) {
+            if (error instanceof ZodError) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Validation error',
+                    errors: error.issues.map(issue => ({
+                        field: issue.path.join('.'),
+                        message: issue.message
+                    }))
+                });
+            }
             next(error);
         }
     };

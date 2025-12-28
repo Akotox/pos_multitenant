@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { AdminPermission } from '../modules/admin/domain/entities/Admin';
 
 declare global {
     namespace Express {
@@ -9,9 +10,10 @@ declare global {
                 role: string;
             };
             admin?: {
-                id: string;
-                role: string;
+                adminId: string;
                 email: string;
+                role: string;
+                permissions: AdminPermission[];
             };
             tenantId?: string;
             userName?: string;
